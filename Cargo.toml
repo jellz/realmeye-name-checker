@@ -1,0 +1,17 @@
+[package]
+authors = ["Daniel <danielgulic@gmail.com>"]
+edition = "2018"
+name = "realmeye-name-checker"
+version = "0.1.0"
+
+[dependencies]
+chrono = "0.4"
+path-absolutize = "*"
+serde_json = "1.0"
+termprogress = "0.3.4"
+open = "1"
+structopt = "0.3.21"
+
+[dependencies.reqwest]
+features = ["json", "blocking"]
+version = "0.10"
