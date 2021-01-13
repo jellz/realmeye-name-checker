@@ -3,7 +3,6 @@ use std::{fs::File, io::Write, path::PathBuf};
 use chrono::{Datelike, Timelike, Utc};
 use path_absolutize::Absolutize;
 use structopt::StructOpt;
-use termprogress::prelude::*;
 
 const PROFILE_API_URL: &str = "https://realmeye.com/player/";
 const RAW_CHARS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -17,10 +16,9 @@ struct Opt {
 }
 
 fn main() {
-	let mut progress = Bar::default();
 	let mut checked_count: f64 = 0.0;
 
-	progress.println(
+	println!(
 		"= Welcome to RealmEye Name Checker =\n\nThe program will start checking all 2-letter A-z names for availability on RealmEye.\nThe speed depends on your internet speed. This process could take up to 2 hours.\nThe name dump file will automatically be opened once the process is complete.",
 	);
 
@@ -32,15 +30,15 @@ fn main() {
 	let available_names: Vec<String> = all_names
 		.iter()
 		.filter(|n| {
-			progress.set_title(&format!("Checking name: {}", n).to_string());
+			//set_title(&format!("Checking name: {}", n).to_string());
 			let available =
 				is_name_available(n).expect("Unable to check name availability in filter");
-			checked_count += 1.0;
-			let percentage = checked_count / all_names.len() as f64;
-			progress.set_progress(percentage);
-			available
-		})
-		.map(|s| s.clone())
+        		checked_count += 1.0;
+        		let percentage = checked_count / all_names.len() as f64 * 100.0;
+                        println!("Progress: {:.2}%", percentage);
+        		available
+	        })
+                .map(|s| s.clone())
 		.collect();
 
 	let file_path = create_dump_file(available_names).expect("Unable to create name dump file");
@@ -66,7 +64,7 @@ fn is_name_available(name: &str) -> Result<bool, Box<dyn std::error::Error>> {
 
 	let request = client
 		.get(&url)
-		.header("User-Agent", "RealmEye Name Checker 1.0");
+		.header("User-Agent", "RealmEye Name Checker/1.0 (https://github.com/jellz/realmeye-name-checker)");
 
 	let text = request.send()?.text().expect("Unable to get response text");
 
