@@ -5,7 +5,7 @@ use path_absolutize::Absolutize;
 use structopt::StructOpt;
 
 const PROFILE_API_URL: &str = "https://realmeye.com/player/";
-const RAW_CHARS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const RAW_CHARS: &str = "abcdefghijklmnopqrstuvwxyz";
 const RAW_CHARS_DEBUG: &str = "abc";
 
 #[derive(Debug, StructOpt)]
@@ -68,7 +68,7 @@ fn is_name_available(name: &str) -> Result<bool, Box<dyn std::error::Error>> {
 
 	let text = request.send()?.text().expect("Unable to get response text");
 
-	let available = !text.contains("Sorry, but we either"); // probably means the profile doesn't exist
+	let available = text.contains("Sorry, but we either"); // probably means the profile doesn't exist
 	Ok(available)
 }
 
